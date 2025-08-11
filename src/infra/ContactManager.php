@@ -6,6 +6,7 @@ use domain\Contact;
 
 class InsertContactException extends \RuntimeException {}
 class DeleteContactException extends \RuntimeException {}
+class UpdateContactException extends \RuntimeException {}
 
 class ContactManager
 {
@@ -73,5 +74,30 @@ class ContactManager
         } catch(\Exception $e) {
             throw new DeleteContactException($e);
         }
+    }
+
+    public function save(int $id, string $name, string $email, string $phone_number)
+    {
+        $sql = "UPDATE contact SET name = :name, email = :email, phone_number = :phone_number WHERE id = :id";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                "id" => $id,
+                "name" => $name,
+                "email" => $email,
+                "phone_number" => $phone_number,
+            ]);
+        } catch(\Exception $e) {
+            throw new UpdateContactException($e);
+        }
+    }
+
+    public function fromInput(int $id, string $name, string $email, string $phone_number) : Contact
+    {
+        $contact = new Contact($id);
+        $contact->setName($name);
+        $contact->setEmail($email);
+        $contact->setPhoneNumber($phone_number);
+        return $contact;
     }
 }
