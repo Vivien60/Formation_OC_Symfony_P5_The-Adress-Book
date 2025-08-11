@@ -23,6 +23,9 @@ class DBConnect
         return new DBConnect($conf);
     }
 
+    /**
+     * Connect to the database then return the PDO object
+     */
     public function getPDO(): \PDO
     {
         if(!$this->pdo) {
@@ -31,6 +34,9 @@ class DBConnect
         return $this->pdo;
     }
 
+    /**
+     * Connect to the database
+     */
     private function connect()
     {
         try {

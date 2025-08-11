@@ -3,10 +3,7 @@ declare(strict_types=1);
 namespace infra;
 
 use domain\Contact;
-
-class InsertContactException extends \RuntimeException {}
-class DeleteContactException extends \RuntimeException {}
-class UpdateContactException extends \RuntimeException {}
+use exception\ReadContactException;
 
 class ContactManager
 {
@@ -27,14 +24,21 @@ class ContactManager
 
     public function find(int $id) : ?Contact
     {
-        $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
-        $contactStatement->execute([
-            "id" => $id
-        ]);
-        $record = $contactStatement->fetch();
+        try {
+            $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
+            $contactStatement->execute([
+                "id" => $id
+            ]);
+            $record = $contactStatement->fetch();
+        } catch(\Exception $e) {
+            throw new ReadContactException($e);
+        }
         return $this->contactFromRecord($record);
     }
 
+    /**
+     * Instanciate Contact object with data from a database record
+     */
     private function contactFromRecord($record): ?Contact
     {
         if(empty($record) || empty($record["id"])) {
@@ -47,6 +51,9 @@ class ContactManager
         return $contact;
     }
 
+    /**
+     * Insert a new contact in a database
+     */
     public function create(string $name, string $email, string $phone_number): int
     {
         $sql = "INSERT INTO contact (name, email, phone_number) VALUES (:name, :email, :phone_number)";
@@ -59,11 +66,11 @@ class ContactManager
             ]);
             return intval($this->pdo->lastInsertId());
         } catch (\Exception $e) {
-            throw new InsertContactException($e);
+            throw new \exception\InsertContactException($e);
         }
     }
 
-    public function delete(int $id)
+    public function delete(int $id) : void
     {
         $sql = "DELETE FROM contact WHERE id = :id";
         try {
@@ -72,11 +79,14 @@ class ContactManager
                 "id" => $id
             ]);
         } catch(\Exception $e) {
-            throw new DeleteContactException($e);
+            throw new \exception\DeleteContactException($e);
         }
     }
 
-    public function save(int $id, string $name, string $email, string $phone_number)
+    /**
+     * Update a contact in a database
+     */
+    public function save(int $id, string $name, string $email, string $phone_number) : void
     {
         $sql = "UPDATE contact SET name = :name, email = :email, phone_number = :phone_number WHERE id = :id";
         try {
@@ -88,16 +98,7 @@ class ContactManager
                 "phone_number" => $phone_number,
             ]);
         } catch(\Exception $e) {
-            throw new UpdateContactException($e);
+            throw new \exception\UpdateContactException($e);
         }
-    }
-
-    public function fromInput(int $id, string $name, string $email, string $phone_number) : Contact
-    {
-        $contact = new Contact($id);
-        $contact->setName($name);
-        $contact->setEmail($email);
-        $contact->setPhoneNumber($phone_number);
-        return $contact;
     }
 }
