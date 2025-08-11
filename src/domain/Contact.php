@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace domain;
 
-class Contact
+class Contact implements \Stringable
 {
     private int $id;
     private string $name;
