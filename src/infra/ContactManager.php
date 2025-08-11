@@ -3,10 +3,7 @@ declare(strict_types=1);
 namespace infra;
 
 use domain\Contact;
-
-class InsertContactException extends \RuntimeException {}
-class DeleteContactException extends \RuntimeException {}
-class UpdateContactException extends \RuntimeException {}
+use exception\ReadContactException;
 
 class ContactManager
 {
@@ -27,11 +24,15 @@ class ContactManager
 
     public function find(int $id) : ?Contact
     {
-        $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
-        $contactStatement->execute([
-            "id" => $id
-        ]);
-        $record = $contactStatement->fetch();
+        try {
+            $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
+            $contactStatement->execute([
+                "id" => $id
+            ]);
+            $record = $contactStatement->fetch();
+        } catch(\Exception $e) {
+            throw new ReadContactException($e);
+        }
         return $this->contactFromRecord($record);
     }
 
@@ -59,7 +60,7 @@ class ContactManager
             ]);
             return intval($this->pdo->lastInsertId());
         } catch (\Exception $e) {
-            throw new InsertContactException($e);
+            throw new \exception\InsertContactException($e);
         }
     }
 
@@ -72,7 +73,7 @@ class ContactManager
                 "id" => $id
             ]);
         } catch(\Exception $e) {
-            throw new DeleteContactException($e);
+            throw new \exception\DeleteContactException($e);
         }
     }
 
@@ -88,7 +89,7 @@ class ContactManager
                 "phone_number" => $phone_number,
             ]);
         } catch(\Exception $e) {
-            throw new UpdateContactException($e);
+            throw new \exception\UpdateContactException($e);
         }
     }
 

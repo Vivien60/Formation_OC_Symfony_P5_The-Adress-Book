@@ -15,6 +15,9 @@ class Contact implements \Stringable
     public function __construct(int $id)
     {
         $this->id = $id;
+        $this->name = "<empty>";
+        $this->email = "<empty>";
+        $this->phone_number = "<empty>";
     }
 
 
@@ -40,17 +43,17 @@ class Contact implements \Stringable
 
     public function setName(string $name): void
     {
-        $this->name = $name;
+        $this->name = $name?:"<empty>";
     }
 
     public function setEmail(string $email): void
     {
-        $this->email = $email;
+        $this->email = $email?:"<empty>";
     }
 
     public function setPhoneNumber(string $phone_number): void
     {
-        $this->phone_number = $phone_number;
+        $this->phone_number = $phone_number?:"<empty>";
     }
 
     public function __toString() : string

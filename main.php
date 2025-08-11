@@ -11,7 +11,7 @@ $conf = Conf::fromInstance();
 $pdo = DBConnect::fromInstance($conf->_config['bddConfig'])->getPDO();
 
 while (true) {
-    $line = readline("Entrez votre commande (help, list, detail, create, delete, quit): ");
+    $line = readline("Entrez votre commande (help, list, detail, create, update, delete, quit): ");
     if(empty($line)) {
         continue;
     }
@@ -44,11 +44,14 @@ while (true) {
             break;
         case "update" :
             //create Spider Man, sm@marvel.com, 020202020
+            var_dump($args);
             if(empty($args)) {
                 $hasError = true;
             } else {
-                list($id, $name, $email, $phone_number) = explode(",", $args);
-                $id = intval($id);
+                $id = intval($args[0]);
+                $name = $args[1]??'';
+                $email = $args[2]??'';
+                $phone_number = $args[3]??'';
                 if(empty($id)) {
                     $hasError = true;
                 }
