@@ -5,6 +5,7 @@ namespace infra;
 use domain\Contact;
 
 class InsertContactException extends \RuntimeException {}
+class DeleteContactException extends \RuntimeException {}
 
 class ContactManager
 {
@@ -58,6 +59,19 @@ class ContactManager
             return intval($this->pdo->lastInsertId());
         } catch (\Exception $e) {
             throw new InsertContactException($e);
+        }
+    }
+
+    public function delete(int $id)
+    {
+        $sql = "DELETE FROM contact WHERE id = :id";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                "id" => $id
+            ]);
+        } catch(\Exception $e) {
+            throw new DeleteContactException($e);
         }
     }
 }

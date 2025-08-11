@@ -56,4 +56,27 @@ class Command
         echo "Contact créé : ", $contact, PHP_EOL;
     }
 
+    public function delete(int $id)
+    {
+        $id = intval($id);
+        $mng = new ContactManager($this->pdo);
+        $contact = $mng->find($id);
+        if(!$contact) {
+            echo "Ce contact n'existe pas en BDD.", PHP_EOL;
+            return;
+        }
+        try {
+            $mng->delete($id);
+        } catch(\Exception $e) {
+            echo "Erreur lors de la suppression du contact : ", $e->getMessage(), PHP_EOL;
+            return;
+        }
+        $contact = $mng->find($id);
+        if($contact) {
+            echo "Erreur inconnue lors de la suppression du contact. Le contact est toujours présent en BDD.", PHP_EOL;
+            return;
+        }
+        echo "Contact supprimé.", PHP_EOL;
+    }
+
 }

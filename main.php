@@ -22,7 +22,6 @@ while (true) {
             $commandController = new \controller\Command($pdo);
             $commandController->detail($args);
             break;
-            break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
             if(empty($args)) {
@@ -32,6 +31,16 @@ while (true) {
             list($name, $email, $phone_number) = explode(",", $args);
             $commandController = new \controller\Command($pdo);
             $commandController->create($name, $email, $phone_number);
+            break;
+        case "delete" :
+            //delete 8
+            $id = intval($args);
+            if(empty($id)) {
+                echo "Error", PHP_EOL, "Usage : delete <id>", PHP_EOL;
+                break;
+            }
+            $commandController = new \controller\Command($pdo);
+            $commandController->delete($id);
             break;
         default:
             echo "Vous avez saisi : $line \n";
