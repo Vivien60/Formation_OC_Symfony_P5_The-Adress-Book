@@ -4,6 +4,8 @@ namespace infra;
 
 use domain\Contact;
 
+class InsertContactException extends \RuntimeException {}
+
 class ContactManager
 {
 
@@ -41,5 +43,21 @@ class ContactManager
         $contact->setEmail($record["email"]);;
         $contact->setPhoneNumber($record["phone_number"]);;
         return $contact;
+    }
+
+    public function create(string $name, string $email, string $phone_number): int
+    {
+        $sql = "INSERT INTO contact (name, email, phone_number) VALUES (:name, :email, :phone_number)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                "name" => $name,
+                "email" => $email,
+                "phone_number" => $phone_number,
+            ]);
+            return intval($this->pdo->lastInsertId());
+        } catch (\Exception $e) {
+            throw new InsertContactException($e);
+        }
     }
 }

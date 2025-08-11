@@ -5,6 +5,7 @@ namespace controller;
 
 use domain\Contact;
 use infra\ContactManager;
+use infra\InsertContactException;
 
 class Command
 {
@@ -37,6 +38,22 @@ class Command
             return;
         }
         echo "Affichage du contact : ", PHP_EOL, $contact, PHP_EOL;
+    }
+
+    public function create(string $name, string $email, string $phone_number)
+    {
+        $name = trim(htmlspecialchars($name));
+        $email = trim(htmlspecialchars($email));
+        $phone_number = trim(htmlspecialchars($phone_number));
+        $mng = new ContactManager($this->pdo);
+        try {
+            $contact = $mng->create($name, $email, $phone_number);
+        } catch (InsertContactException $e) {
+            echo "Erreur lors de l'insertion du contact : ", $e->getMessage(), PHP_EOL;
+            return;
+        }
+        $contact = $mng->find($contact);
+        echo "Contact créé : ", $contact, PHP_EOL;
     }
 
 }
