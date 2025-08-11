@@ -9,7 +9,7 @@ $conf = Conf::fromInstance();
 $pdo = DBConnect::fromInstance($conf->_config['bddConfig'])->getPDO();
 
 while (true) {
-    $line = readline("Entrez votre commande : ");
+    $line = readline("Entrez votre commande (help, list, detail, create, delete, quit): ");
     $hasError = false;
     $input = preg_match("/^(.+?)\s*((?<=\s)(.*))?$/", $line, $matches);
     $command = $matches[1];
@@ -61,14 +61,17 @@ while (true) {
             $commandController = new \controller\Command($pdo);
             $commandController->delete($id);
             break;
+        case "quit" :
+            echo "Bye bye !", PHP_EOL;
+            exit();
+        default:
+            echo "Erreur.", PHP_EOL, "Usage:", PHP_EOL;
         case "help" :
             echo "list : lister les contacts", PHP_EOL,
             "detail <id> : afficher un contact", PHP_EOL,
             "create <name>,<email>,<phone_number> : créer un contact", PHP_EOL,
             "delete <id> : supprimer un contact", PHP_EOL;
             break;
-        default:
-            echo "Vous avez saisi : $line \n";
     };
     unset($commandController);
 }
