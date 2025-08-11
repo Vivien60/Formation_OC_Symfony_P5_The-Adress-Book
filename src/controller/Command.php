@@ -26,7 +26,7 @@ class Command
         }
     }
 
-    public function detail($id)
+    public function detail(int $id) : void
     {
         $id = intval($id);
         if($id < 1) {
@@ -47,7 +47,7 @@ class Command
         echo "Affichage du contact : ", PHP_EOL, $contact, PHP_EOL;
     }
 
-    public function create(string $name, string $email='', string $phone_number='')
+    public function create(string $name, string $email='', string $phone_number='') : void
     {
         $name = trim(htmlspecialchars($name));
         $email = trim(htmlspecialchars($email));
@@ -63,7 +63,7 @@ class Command
         echo "Contact créé : ", $contact, PHP_EOL;
     }
 
-    public function update(int $id, string $name='', string $email='', string $phone_number='')
+    public function update(int $id, string $name='', string $email='', string $phone_number='') : void
     {
         $id = intval($id);
         $name = trim(htmlspecialchars($name));
@@ -84,7 +84,7 @@ class Command
         echo "Contact mis à jour.", PHP_EOL;
     }
 
-    public function delete(int $id)
+    public function delete(int $id) : void
     {
         $id = intval($id);
         $mng = new ContactManager($this->pdo);

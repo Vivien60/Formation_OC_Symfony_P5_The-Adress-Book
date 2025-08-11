@@ -36,6 +36,9 @@ class ContactManager
         return $this->contactFromRecord($record);
     }
 
+    /**
+     * Instanciate Contact object with data from a database record
+     */
     private function contactFromRecord($record): ?Contact
     {
         if(empty($record) || empty($record["id"])) {
@@ -48,6 +51,9 @@ class ContactManager
         return $contact;
     }
 
+    /**
+     * Insert a new contact in a database
+     */
     public function create(string $name, string $email, string $phone_number): int
     {
         $sql = "INSERT INTO contact (name, email, phone_number) VALUES (:name, :email, :phone_number)";
@@ -64,7 +70,7 @@ class ContactManager
         }
     }
 
-    public function delete(int $id)
+    public function delete(int $id) : void
     {
         $sql = "DELETE FROM contact WHERE id = :id";
         try {
@@ -77,7 +83,10 @@ class ContactManager
         }
     }
 
-    public function save(int $id, string $name, string $email, string $phone_number)
+    /**
+     * Update a contact in a database
+     */
+    public function save(int $id, string $name, string $email, string $phone_number) : void
     {
         $sql = "UPDATE contact SET name = :name, email = :email, phone_number = :phone_number WHERE id = :id";
         try {
@@ -91,14 +100,5 @@ class ContactManager
         } catch(\Exception $e) {
             throw new \exception\UpdateContactException($e);
         }
-    }
-
-    public function fromInput(int $id, string $name, string $email, string $phone_number) : Contact
-    {
-        $contact = new Contact($id);
-        $contact->setName($name);
-        $contact->setEmail($email);
-        $contact->setPhoneNumber($phone_number);
-        return $contact;
     }
 }
