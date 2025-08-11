@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
+error_reporting(E_ALL);
 
 require_once "autoload.php";
+
 use \config\Conf;
 use \infra\DBConnect;
 
@@ -10,6 +12,9 @@ $pdo = DBConnect::fromInstance($conf->_config['bddConfig'])->getPDO();
 
 while (true) {
     $line = readline("Entrez votre commande (help, list, detail, create, delete, quit): ");
+    if(empty($line)) {
+        continue;
+    }
     $hasError = false;
     $input = preg_match("/^(.+?)\s*((?<=\s)(.*))?$/", $line, $matches);
     $command = $matches[1];
@@ -20,13 +25,17 @@ while (true) {
             $commandController->list();
             break;
         case "detail" :
+            if(empty($args)) {
+                echo "Error", PHP_EOL, 'Usage: detail <id>', PHP_EOL;
+                break;
+            }
             $commandController = new \controller\Command($pdo);
             $commandController->detail($args);
             break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
             if(empty($args)) {
-                echo "Error", PHP_EOL, "Usage : create <name>,<email>,<phone_number>", PHP_EOL;
+                echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
                 break;
             }
             list($name, $email, $phone_number) = explode(",", $args);
@@ -72,6 +81,6 @@ while (true) {
             "create <name>,<email>,<phone_number> : créer un contact", PHP_EOL,
             "delete <id> : supprimer un contact", PHP_EOL;
             break;
-    };
+    }
     unset($commandController);
 }
