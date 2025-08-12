@@ -38,17 +38,27 @@ class ContactManager
 
     /**
      * Instanciate Contact object with data from a database record
+     * COmmand, not Query
      */
     private function contactFromRecord($record): ?Contact
     {
         if(empty($record) || empty($record["id"])) {
             return null;
         }
+
+        /*
+         * Keep your code shy
+         * Tell, don't ask
+         * https://www2.ccs.neu.edu/research/demeter/related-work/pragmatic-programmer/jan_03_enbug.pdf
+         *
+         * Ask :
         $contact = new Contact($record["id"]);
         $contact->setName($record["name"]);;
         $contact->setEmail($record["email"]);;
-        $contact->setPhoneNumber($record["phone_number"]);;
-        return $contact;
+        $contact->setPhoneNumber($record["phone_number"]);
+         * Tell :
+         */
+        return Contact::fromArray($record);
     }
 
     /**

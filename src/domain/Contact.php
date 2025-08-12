@@ -20,6 +20,15 @@ class Contact implements \Stringable
         $this->phone_number = "<empty>";
     }
 
+    public static function fromArray($record)
+    {
+        $contact = new static($record["id"]);
+        $contact->setName($record["name"]);
+        $contact->setEmail($record["email"]);
+        $contact->setPhoneNumber($record["phone_number"]);
+        return $contact;
+    }
+
 
     public function getId(): int
     {
