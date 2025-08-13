@@ -59,9 +59,9 @@ while (true) {
             } else {
                 $args = explode(",", $args);
                 $id = intval(trim($args[0]));
-                $name = trim($args[1])??'';
-                $email = trim($args[2])??'';
-                $phone_number = trim($args[3])??'';
+                $name = trim($args[1]??'');
+                $email = trim($args[2]??'');
+                $phone_number = trim($args[3]??'');
             }
             if($hasError) {
                 echo "Error", PHP_EOL, "Usage : update <id>,<name>,<email>,<phone_number>", PHP_EOL;
