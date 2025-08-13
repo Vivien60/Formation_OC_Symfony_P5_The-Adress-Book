@@ -39,10 +39,11 @@ while (true) {
             $usage = "create <name>,<email>,<phone_number>";
             if(empty($args)) {
                 $hasError = true;
-            }
-            $args = explode(",", $args);
-            if(count($args) < 3) {
-                $hasError = true;
+            } else {
+                $args = explode(",", $args);
+                if(count($args) != 3) {
+                    $hasError = true;
+                }
             }
             if($hasError) {
                 echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
