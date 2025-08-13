@@ -23,7 +23,7 @@ while (true) {
     switch ($command) {
         case "list" :
             $commandController = new \controller\Command($pdo);
-            $commandController->list();
+            echo $commandController->list();
             break;
         case "detail" :
             if(empty($args)) {
@@ -32,7 +32,7 @@ while (true) {
             }
             $id = intval($args);
             $commandController = new \controller\Command($pdo);
-            $commandController->detail($id);
+            echo $commandController->detail($id);
             break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
@@ -50,7 +50,7 @@ while (true) {
             }
             list($name, $email, $phone_number) = $args;
             $commandController = new \controller\Command($pdo);
-            $commandController->create($name, $email, $phone_number);
+            echo $commandController->create($name, $email, $phone_number);
             break;
         case "update" :
             //create Spider Man, sm@marvel.com, 020202020
@@ -71,7 +71,7 @@ while (true) {
                 break;
             }
             $commandController = new \controller\Command($pdo);
-            $commandController->update($id, $name, $email, $phone_number);
+            echo $commandController->update($id, $name, $email, $phone_number);
             break;
         case "delete" :
             //delete 8
@@ -81,7 +81,7 @@ while (true) {
                 break;
             }
             $commandController = new \controller\Command($pdo);
-            $commandController->delete($id);
+            echo $commandController->delete($id);
             break;
         case "quit" :
             echo "Bye bye !", PHP_EOL;
