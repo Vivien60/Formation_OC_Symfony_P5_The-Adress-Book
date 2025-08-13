@@ -15,63 +15,71 @@ while (true) {
     if(empty($line)) {
         continue;
     }
+    $line = trim($line);
     $hasError = false;
-    $input = preg_match("/^(.+?)\s*((?<=\s)(.*))?$/", $line, $matches);
-    $command = $matches[1];
+    $input = preg_match("/^(.+?)\s*(?:(?<=\s)(.*))?$/s", $line, $matches);
+    $command = trim($matches[1]);
     $args = $matches[2]??null;
     switch ($command) {
         case "list" :
             $commandController = new \controller\Command($pdo);
-            $commandController->list();
+            echo $commandController->list();
             break;
         case "detail" :
             if(empty($args)) {
                 echo "Error", PHP_EOL, 'Usage: detail <id>', PHP_EOL;
                 break;
             }
+            $id = intval($args);
             $commandController = new \controller\Command($pdo);
-            $commandController->detail($args);
+            echo $commandController->detail($id);
             break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
-            if(empty($args)) {
-                echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
-                break;
-            }
-            list($name, $email, $phone_number) = explode(",", $args);
-            $commandController = new \controller\Command($pdo);
-            $commandController->create($name, $email, $phone_number);
-            break;
-        case "update" :
-            //create Spider Man, sm@marvel.com, 020202020
-            var_dump($args);
+            $usage = "create <name>,<email>,<phone_number>";
             if(empty($args)) {
                 $hasError = true;
             } else {
-                $id = intval($args[0]);
-                $name = $args[1]??'';
-                $email = $args[2]??'';
-                $phone_number = $args[3]??'';
-                if(empty($id)) {
+                $args = explode(",", $args);
+                if(count($args) != 3) {
                     $hasError = true;
                 }
+            }
+            if($hasError) {
+                echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
+                break;
+            }
+            list($name, $email, $phone_number) = $args;
+            $commandController = new \controller\Command($pdo);
+            echo $commandController->create($name, $email, $phone_number);
+            break;
+        case "update" :
+            //create Spider Man, sm@marvel.com, 020202020
+            if(empty($args)) {
+                $hasError = true;
+            } else {
+                $args = explode(",", $args);
+                $id = intval(trim($args[0]));
+                $name = trim($args[1]??'');
+                $email = trim($args[2]??'');
+                $phone_number = trim($args[3]??'');
             }
             if($hasError) {
                 echo "Error", PHP_EOL, "Usage : update <id>,<name>,<email>,<phone_number>", PHP_EOL;
                 break;
             }
             $commandController = new \controller\Command($pdo);
-            $commandController->update($id, $name, $email, $phone_number);
+            echo $commandController->update($id, $name, $email, $phone_number);
             break;
         case "delete" :
             //delete 8
-            $id = intval($args);
-            if(empty($id)) {
-                echo "Error", PHP_EOL, "Usage : delete <id>", PHP_EOL;
+            if(empty($args)) {
+                echo "Error", PHP_EOL, 'Usage: delete <id>', PHP_EOL;
                 break;
             }
+            $id = intval($args);
             $commandController = new \controller\Command($pdo);
-            $commandController->delete($id);
+            echo $commandController->delete($id);
             break;
         case "quit" :
             echo "Bye bye !", PHP_EOL;
