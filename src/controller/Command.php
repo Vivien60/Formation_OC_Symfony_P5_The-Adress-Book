@@ -31,7 +31,7 @@ class Command
     {
         $id = intval($id);
         if($id < 1) {
-            return "ID invalide" . PHP_EOL;
+            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
         }
         $mng = new ContactManager($this->pdo);
         try {
@@ -63,6 +63,9 @@ class Command
     public function update(int $id, string $name='', string $email='', string $phone_number='') : string
     {
         $id = intval($id);
+        if($id < 1) {
+            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
+        }
         $name = trim(htmlspecialchars($name));
         $email = trim(htmlspecialchars($email));
         $phone_number = trim(htmlspecialchars($phone_number));
@@ -82,8 +85,8 @@ class Command
     public function delete(int $id) : string
     {
         $id = intval($id);
-        if(empty($id)) {
-            return "Erreur : L'id doit être un entier positif non null." . PHP_EOL;
+        if($id < 1) {
+            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
         }
         $mng = new ContactManager($this->pdo);
         $contact = $mng->find($id);
