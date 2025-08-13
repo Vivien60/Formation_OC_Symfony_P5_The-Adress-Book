@@ -62,9 +62,6 @@ while (true) {
                 $name = trim($args[1])??'';
                 $email = trim($args[2])??'';
                 $phone_number = trim($args[3])??'';
-                if(empty($id)) {
-                    $hasError = true;
-                }
             }
             if($hasError) {
                 echo "Error", PHP_EOL, "Usage : update <id>,<name>,<email>,<phone_number>", PHP_EOL;
@@ -75,11 +72,11 @@ while (true) {
             break;
         case "delete" :
             //delete 8
-            $id = intval($args);
-            if(empty($id)) {
-                echo "Error", PHP_EOL, "Usage : delete <id>", PHP_EOL;
+            if(empty($args)) {
+                echo "Error", PHP_EOL, 'Usage: delete <id>', PHP_EOL;
                 break;
             }
+            $id = intval($args);
             $commandController = new \controller\Command($pdo);
             echo $commandController->delete($id);
             break;
