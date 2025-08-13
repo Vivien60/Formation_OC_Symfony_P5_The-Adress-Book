@@ -15,9 +15,10 @@ while (true) {
     if(empty($line)) {
         continue;
     }
+    $line = trim($line);
     $hasError = false;
-    $input = preg_match("/^(.+?)\s*((?<=\s)(.*))?$/", $line, $matches);
-    $command = $matches[1];
+    $input = preg_match("/^(.+?)\s*(?:(?<=\s)(.*))?$/s", $line, $matches);
+    $command = trim($matches[1]);
     $args = $matches[2]??null;
     switch ($command) {
         case "list" :
@@ -29,29 +30,38 @@ while (true) {
                 echo "Error", PHP_EOL, 'Usage: detail <id>', PHP_EOL;
                 break;
             }
+            $id = intval($args);
             $commandController = new \controller\Command($pdo);
-            $commandController->detail($args);
+            $commandController->detail($id);
             break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
+            $usage = "create <name>,<email>,<phone_number>";
             if(empty($args)) {
+                $hasError = true;
+            }
+            $args = explode(",", $args);
+            if(count($args) < 3) {
+                $hasError = true;
+            }
+            if($hasError) {
                 echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
                 break;
             }
-            list($name, $email, $phone_number) = explode(",", $args);
+            list($name, $email, $phone_number) = $args;
             $commandController = new \controller\Command($pdo);
             $commandController->create($name, $email, $phone_number);
             break;
         case "update" :
             //create Spider Man, sm@marvel.com, 020202020
-            var_dump($args);
             if(empty($args)) {
                 $hasError = true;
             } else {
-                $id = intval($args[0]);
-                $name = $args[1]??'';
-                $email = $args[2]??'';
-                $phone_number = $args[3]??'';
+                $args = explode(",", $args);
+                $id = intval(trim($args[0]));
+                $name = trim($args[1])??'';
+                $email = trim($args[2])??'';
+                $phone_number = trim($args[3])??'';
                 if(empty($id)) {
                     $hasError = true;
                 }

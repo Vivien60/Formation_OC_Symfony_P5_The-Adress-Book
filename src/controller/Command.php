@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace controller;
 
-use domain\Contact;
+use dto\Contact;
 use exception\ReadContactException;
 use exception\UpdateContactException;
 use infra\ContactManager;
@@ -87,6 +87,10 @@ class Command
     public function delete(int $id) : void
     {
         $id = intval($id);
+        if(empty($id)) {
+            echo "Erreur : L'id doit être un entier positif non null.", PHP_EOL;
+            return;
+        }
         $mng = new ContactManager($this->pdo);
         $contact = $mng->find($id);
         if(!$contact) {

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace infra;
 
-use domain\Contact;
+use dto\Contact;
 use exception\ReadContactException;
 
 class ContactManager
