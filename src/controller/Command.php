@@ -15,6 +15,26 @@ use exception\InsertContactException;
  *      en structurant de manière à ce que la vue (main.php, qui est aussi un routeur)
  *      ne soit pas nécessairement dépendante du message textuel, mais puisse comprendre techniquement l'erreur
  *      et afficher son propre message.
+ *      Par ailleurs pour respecter MVC, il faudrait aussi une couche Model, enfin bon ^^
+ *      Ensuite, s'amuser à le faire en DDD :
+ *      src/
+ *      ├── domain/
+ *      │   ├── Contact.php (DTO)
+ *      │   └── ContactRepositoryInterface.php
+ *      ├── infrastructure/
+ *      │   ├── DatabaseContactRepository.php (ex-ContactManager)
+ *      │   └── DatabaseConnection.php (ex-DBConnect)
+ *      ├── application/
+ *      │   └── ContactService.php (logique métier)
+ *      ├── presentation/
+ *      │   ├── cli/
+ *      │   │   ├── CommandParser.php
+ *      │   │   └── CliController.php (ex-Command)
+ *      │   └── ResponseFormatter.php
+ *      ├── config/
+ *      │   └── Conf.php
+ *      └── exception/
+ *
  */
 class Command
 {
