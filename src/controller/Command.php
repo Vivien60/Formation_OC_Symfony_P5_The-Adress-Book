@@ -9,6 +9,13 @@ use exception\UpdateContactException;
 use infra\ContactManager;
 use exception\InsertContactException;
 
+/**
+ * //TODO : pour respecter MVC : ne pas retourner un message directement,
+ *      mais un json, avec une erreur, son code et son descriptif,
+ *      en structurant de manière à ce que la vue (main.php, qui est aussi un routeur)
+ *      ne soit pas nécessairement dépendante du message textuel, mais puisse comprendre techniquement l'erreur
+ *      et afficher son propre message.
+ */
 class Command
 {
     public function __construct(private \PDO $pdo)
