@@ -10,41 +10,34 @@ use \infra\DBConnect;
 $conf = Conf::fromInstance();
 $pdo = DBConnect::fromInstance($conf->_config['bddConfig'])->getPDO();
 
+
+
 while (true) {
     $line = readline("Entrez votre commande (help, list, detail, create, update, delete, quit): ");
     if(empty($line)) {
         continue;
     }
     $line = trim($line);
-    $hasError = false;
-    $input = preg_match("/^(.+?)\s*(?:(?<=\s)(.*))?$/s", $line, $matches);
-    $command = trim($matches[1]);
-    $args = $matches[2]??null;
+    $parser = new \infra\CommandParser($line);
+    $hasError = !$parser->build()->validate();
+    $command = $parser->getCommand();
+    $args = $parser->getArgs();
     switch ($command) {
         case "list" :
             $commandController = new \controller\Command($pdo);
             echo $commandController->list();
             break;
         case "detail" :
-            if(empty($args)) {
+            if($hasError) {
                 echo "Error", PHP_EOL, 'Usage: detail <id>', PHP_EOL;
                 break;
             }
-            $id = intval($args);
             $commandController = new \controller\Command($pdo);
-            echo $commandController->detail($id);
+            echo $commandController->detail($args[0]);
             break;
         case "create" :
             //create Spider Man, sm@marvel.com, 020202020
             $usage = "create <name>,<email>,<phone_number>";
-            if(empty($args)) {
-                $hasError = true;
-            } else {
-                $args = explode(",", $args);
-                if(count($args) != 3) {
-                    $hasError = true;
-                }
-            }
             if($hasError) {
                 echo "Error", PHP_EOL, 'Usage: create <name>,<email>,<phone_number>', PHP_EOL;
                 break;
@@ -55,29 +48,21 @@ while (true) {
             break;
         case "update" :
             //create Spider Man, sm@marvel.com, 020202020
-            if(empty($args)) {
-                $hasError = true;
-            } else {
-                $args = explode(",", $args);
-                $id = intval(trim($args[0]));
-                $name = trim($args[1]??'');
-                $email = trim($args[2]??'');
-                $phone_number = trim($args[3]??'');
-            }
             if($hasError) {
                 echo "Error", PHP_EOL, "Usage : update <id>,<name>,<email>,<phone_number>", PHP_EOL;
                 break;
             }
+            list($id, $name, $email, $phone_number) = $args;
             $commandController = new \controller\Command($pdo);
             echo $commandController->update($id, $name, $email, $phone_number);
             break;
         case "delete" :
             //delete 8
-            if(empty($args)) {
+            if($hasError) {
                 echo "Error", PHP_EOL, 'Usage: delete <id>', PHP_EOL;
                 break;
             }
-            $id = intval($args);
+            $id = $args[0];
             $commandController = new \controller\Command($pdo);
             echo $commandController->delete($id);
             break;
@@ -85,7 +70,7 @@ while (true) {
             echo "Bye bye !", PHP_EOL;
             exit();
         default:
-            echo "Erreur.", PHP_EOL, "Usage:", PHP_EOL;
+            echo "Commande inconnue.", PHP_EOL, "Usage:", PHP_EOL;
         case "help" :
             echo "list : lister les contacts", PHP_EOL,
             "detail <id> : afficher un contact", PHP_EOL,
@@ -94,4 +79,5 @@ while (true) {
             break;
     }
     unset($commandController);
+    unset($parser);
 }
