@@ -1,5 +1,8 @@
 <?php
+
 declare(strict_types=1);
+
+namespace config;
 
 abstract class AbstractConf
 {
@@ -13,7 +16,7 @@ abstract class AbstractConf
 
     public static function fromInstance(array $config = []): static
     {
-        if(static::$instance !== null) {
+        if (static::$instance !== null) {
             return static::$instance;
         }
         return new static($config);

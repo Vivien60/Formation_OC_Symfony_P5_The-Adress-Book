@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace infra;
+namespace utils;
 
-use config\Conf;
 use PDO;
 
 class DBConnect
