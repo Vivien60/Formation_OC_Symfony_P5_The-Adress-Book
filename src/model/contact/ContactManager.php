@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace infra;
+namespace model\contact;
 
-use dto\Contact;
 use exception\ReadContactException;
 
 class ContactManager
@@ -22,8 +21,15 @@ class ContactManager
         return array_map([$this, "contactFromRecord"], $contactStatement->fetchAll());
     }
 
-    public function find(int $id) : ?Contact
+    /**
+     * @throws \InvalidArgumentException
+     * @throws ReadContactException
+     */
+    public function find(int $id) : Contact|null
     {
+        if($id < 1) {
+            throw new \InvalidArgumentException("ID invalide : L'id doit être un entier positif non null.");
+        }
         try {
             $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
             $contactStatement->execute([

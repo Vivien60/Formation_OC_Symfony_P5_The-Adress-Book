@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 require_once "autoload.php";
 
 use \config\Conf;
-use \infra\DBConnect;
+use \utils\DBConnect;
 
 $conf = Conf::fromInstance();
 $pdo = DBConnect::fromInstance($conf->_config['bddConfig'])->getPDO();
@@ -18,7 +18,7 @@ while (true) {
         continue;
     }
     $line = trim($line);
-    $parser = new \infra\CommandParser($line);
+    $parser = new \utils\CommandParser($line);
     $hasError = !$parser->build()->validate();
     $command = $parser->getCommand();
     $args = $parser->getArgs();

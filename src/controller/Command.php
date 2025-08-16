@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace controller;
 
-use dto\Contact;
-use exception\ReadContactException;
-use exception\UpdateContactException;
-use infra\ContactManager;
-use exception\InsertContactException;
+use exception\{InsertContactException, ReadContactException, UpdateContactException};
+use model\contact\ContactManager;
 
 /**
  * //TODO : pour respecter MVC : ne pas retourner un message directement,
@@ -57,14 +54,13 @@ class Command
     public function detail(int $id) : string
     {
         $id = intval($id);
-        if($id < 1) {
-            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
-        }
         $mng = new ContactManager($this->pdo);
         try {
             $contact = $mng->find($id);
         } catch(ReadContactException $e) {
-            return "Erreur lors de la récupération du contact." . PHP_EOL . $e->getMessage() . PHP_EOL;
+            return "Erreur lors de la récupération du contact." . PHP_EOL;
+        } catch(\InvalidArgumentException $e) {
+            return $e->getMessage() . PHP_EOL;
         }
         if(!$contact) {
             return "ID inconnu" . PHP_EOL;
@@ -83,16 +79,19 @@ class Command
         } catch (InsertContactException $e) {
             return "Erreur lors de l'insertion du contact : " . PHP_EOL . $e->getMessage() . PHP_EOL;
         }
-        $contact = $mng->find($contact);
+        try {
+            $contact = $mng->find($contact);
+        } catch(ReadContactException $e) {
+            return "Erreur lors de la récupération du contact." . PHP_EOL;
+        } catch(\InvalidArgumentException $e) {
+            return $e->getMessage() . PHP_EOL;
+        }
         return "Contact créé : " . $contact . PHP_EOL;
     }
 
     public function update(int $id, string $name='', string $email='', string $phone_number='') : string
     {
         $id = intval($id);
-        if($id < 1) {
-            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
-        }
         $name = trim(htmlspecialchars($name));
         $email = trim(htmlspecialchars($email));
         $phone_number = trim(htmlspecialchars($phone_number));
