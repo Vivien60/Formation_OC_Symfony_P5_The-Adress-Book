@@ -37,17 +37,17 @@ class Contact implements \Stringable
 
     public function getName(): string
     {
-        return $this->name;
+        return trim($this->name);
     }
 
     public function getEmail(): string
     {
-        return $this->email;
+        return trim($this->email);
     }
 
     public function getPhoneNumber(): string
     {
-        return $this->phone_number;
+        return trim($this->phone_number);
     }
 
     public function setName(string $name): void
