@@ -70,9 +70,6 @@ class Command
 
     public function create(string $name, string $email='', string $phone_number='') : string
     {
-        $name = trim(htmlspecialchars($name));
-        $email = trim(htmlspecialchars($email));
-        $phone_number = trim(htmlspecialchars($phone_number));
         $mng = new ContactManager($this->pdo);
         try {
             $contact = $mng->create($name, $email, $phone_number);
@@ -91,10 +88,6 @@ class Command
 
     public function update(int $id, string $name='', string $email='', string $phone_number='') : string
     {
-        $id = intval($id);
-        $name = trim(htmlspecialchars($name));
-        $email = trim(htmlspecialchars($email));
-        $phone_number = trim(htmlspecialchars($phone_number));
         $mng = new ContactManager($this->pdo);
         $contact = $mng->find($id);
         if(!$contact) {
@@ -110,20 +103,17 @@ class Command
 
     public function delete(int $id) : string
     {
-        $id = intval($id);
-        if($id < 1) {
-            return "ID invalide : L'id doit être un entier positif non null." . PHP_EOL;
-        }
         $mng = new ContactManager($this->pdo);
-        $contact = $mng->find($id);
-        if(!$contact) {
-            return "Ce contact n'existe pas en BDD." . PHP_EOL;
-        }
         try {
+            $contact = $mng->find($id);
+            if(!$contact) {
+                return "Ce contact n'existe pas en BDD." . PHP_EOL;
+            }
             $mng->delete($id);
         } catch(\Exception $e) {
             return "Erreur lors de la suppression du contact : " . $e->getMessage() . PHP_EOL;
         }
+        //On vérifie que le contact n'existe plus en BDD
         $contact = $mng->find($id);
         if($contact) {
             return "Erreur inconnue lors de la suppression du contact. Le contact est toujours présent en BDD." . PHP_EOL;
