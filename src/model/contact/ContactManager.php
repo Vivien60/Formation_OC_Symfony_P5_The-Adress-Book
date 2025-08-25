@@ -17,7 +17,7 @@ class ContactManager
      */
     public function findAll(): array
     {
-        $contactStatement = $this->pdo->query("SELECT * FROM contact");
+        $contactStatement = $this->pdo->query("SELECT id, name, email, phone_number FROM contact");
         return array_map([$this, "contactFromRecord"], $contactStatement->fetchAll());
     }
 
@@ -31,7 +31,7 @@ class ContactManager
             throw new \InvalidArgumentException("ID invalide : L'id doit être un entier positif non null.");
         }
         try {
-            $contactStatement = $this->pdo->prepare("SELECT * FROM contact where id = :id");
+            $contactStatement = $this->pdo->prepare("SELECT id, name, email, phone_number FROM contact where id = :id");
             $contactStatement->execute([
                 "id" => $id
             ]);
