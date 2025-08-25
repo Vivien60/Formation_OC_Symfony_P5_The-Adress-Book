@@ -53,7 +53,6 @@ class Command
 
     public function detail(int $id) : string
     {
-        $id = intval($id);
         $mng = new ContactManager($this->pdo);
         try {
             $contact = $mng->find($id);
@@ -73,11 +72,9 @@ class Command
         $mng = new ContactManager($this->pdo);
         try {
             $contact = $mng->create($name, $email, $phone_number);
+            $contact = $mng->find($contact);
         } catch (InsertContactException $e) {
             return "Erreur lors de l'insertion du contact : " . PHP_EOL . $e->getMessage() . PHP_EOL;
-        }
-        try {
-            $contact = $mng->find($contact);
         } catch(ReadContactException $e) {
             return "Erreur lors de la récupération du contact." . PHP_EOL;
         } catch(\InvalidArgumentException $e) {
