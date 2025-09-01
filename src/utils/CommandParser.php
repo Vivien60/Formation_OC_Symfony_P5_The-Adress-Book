@@ -2,6 +2,11 @@
 declare(strict_types=1);
 namespace utils;
 
+/**
+ * CommandParser is responsible for parsing a given input string, aka the command written by the user,
+ * into a command and its associated arguments.
+ * It performs lexical and syntactic analysis to validate and extract structured command data.
+ */
 class CommandParser
 {
     const string COMMAND_PATTERN = "/^(.+?)\s*(?:(?<=\s)(.*))?$/s";
@@ -16,6 +21,13 @@ class CommandParser
     {
     }
 
+    /**
+     * Main method
+     * Builds the command and its arguments from the input string,
+     * by lexing (extract and type information globally)
+     * then parsing to type each arg separately, based on the command found.
+     * @return $this
+     */
     public function build() : static
     {
         $this->lexer();
@@ -23,11 +35,19 @@ class CommandParser
         return $this;
     }
 
+    /**
+     * Checks if the command is valid and if the arguments are valid.
+     * @return bool
+     */
     public function validate() : bool
     {
         return !$this->parseError && $this->check();
     }
 
+    /**
+     * Extracts the command and its arguments from the input string.
+     * @return array
+     */
     private function lexer(): array
     {
         preg_match(static::COMMAND_PATTERN, $this->line, $matches);
@@ -36,6 +56,10 @@ class CommandParser
         return array($this->command, $this->args);
     }
 
+    /**
+     * Parses the arguments of the command based on the command found.
+     * @return void
+     */
     private function parser()
     {
         switch ($this->command) {
@@ -63,6 +87,8 @@ class CommandParser
     }
 
     /**
+     * Parses the ID argument of the command.
+     * Returns null if the ID is not a valid integer.
      * @return int|null
      */
     protected function parseId(): ?int
@@ -70,6 +96,11 @@ class CommandParser
         return (isset($this->args[0]) && is_numeric($this->args[0]))? intval($this->args[0]) : null;
     }
 
+    /**
+     * Checks if the command and its arguments are valid,
+     * based on the command found.
+     * @return bool
+     */
     private function check() : bool
     {
         $this->valid = match ($this->command) {
@@ -84,11 +115,27 @@ class CommandParser
         return $this->valid;
     }
 
+    /**
+     * Returns arguments modified by the parser,
+     * so they are typed based on the command found
+     * @return array
+     */
+    public function getParsedArgs(): array
+    {
+        return $this->parsedArgs;
+    }
+
     public function getCommand(): string
     {
         return $this->command;
     }
 
+
+    /**
+     * Returns arguments modified by the parser,
+     * so they are typed based on the command found
+     * @return array
+     */
     public function getArgs(): ?array
     {
         return $this->parsedArgs;
