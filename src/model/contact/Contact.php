@@ -2,6 +2,11 @@
 declare(strict_types=1);
 namespace model\contact;
 
+/**
+ * Contact is a data object representing a contact in the database.
+ * It encapsulates the contact's unique identifier, name, email, and phone number.
+ */
+
 class Contact implements \Stringable
 {
     private int $id;

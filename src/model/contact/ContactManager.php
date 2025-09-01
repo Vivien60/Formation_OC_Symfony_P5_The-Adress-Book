@@ -86,6 +86,9 @@ class ContactManager
         }
     }
 
+    /**
+     * Delete a given contact from a database
+     */
     public function delete(int $id) : void
     {
         $sql = "DELETE FROM contact WHERE id = :id";
